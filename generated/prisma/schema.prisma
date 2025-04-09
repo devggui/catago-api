@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  password  String
+  onboarded Boolean   @default(false)
+  products  Product[]
+  catalogs  Catalog[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  name          String
+  slug          String         @unique
+  description   String?
+  price         Decimal        @default(0.00)
+  category      String?
+  isActive      Boolean        @default(true)
+  isHighlighted Boolean?       @default(false)
+  imageUrl      String?
+  images        ProductImage[]
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String
+  catalogs      Catalog[]      @relation("CatalogProducts")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  createdAt DateTime @default(now())
+
+  @@map("product_images")
+}
+
+model Catalog {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  logo        String?
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  products    Product[] @relation("CatalogProducts")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("catalogs")
+}

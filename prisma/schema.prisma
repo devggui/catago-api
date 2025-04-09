@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -27,7 +26,7 @@ model Product {
   name          String
   slug          String          @unique
   description   String?
-  price         Decimal         @default(0.00)  
+  price         Decimal         @default(0.00)
   category      String?
   isActive      Boolean         @default(true)
   isHighlighted Boolean?        @default(false)

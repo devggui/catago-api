@@ -7,6 +7,7 @@ import { SignInDto } from "./dtos/sign-in.dto"
 import { SignUpDto } from "./dtos/sign-up.dto"
 import { UserAlreadyExistsException } from "./exceptions/user-already-exists.exception"
 import { authStatusEnum } from "./types"
+import { UserNotFoundException } from "./exceptions/user-not-found.exception"
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
       throw new UnauthorizedException()
     }
 
-    const payload = { sub: user.id, username: user.email }
+    const payload = { sub: user?.id, username: user?.email }
     const token = await this.jwtService.signAsync(payload)
 
     res.cookie("auth", token, {
@@ -58,27 +59,26 @@ export class AuthService {
     return this.signIn({ ...user, password }, res)
   }
 
-  async signOut(res: Response) {
+  signOut(res: Response) {
     res.clearCookie("auth")
     return res.send({ success: true, status: authStatusEnum.logged_out })
   }
 
   async getProfile(id: string) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...user } = await this.usersService.findOne({
+    const user = await this.usersService.findOne({
       where: { id },
       include: {
-        currentOrganization: true,
-        organizations: {
-          include: {
-            data: true,
-          },
-        },
-        documentPermissions: true,
-        folderPermissions: true,
+        products: true,
+        catalogs: true,
       },
     })
 
-    return user
+    if (!user) {
+      throw new UserNotFoundException()
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = user
+    return rest
   }
 }

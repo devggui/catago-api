@@ -17,26 +17,17 @@ CREATE TABLE "products" (
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
     "description" TEXT,
-    "price" DECIMAL(65,30) NOT NULL DEFAULT 0.00,
+    "price" DOUBLE PRECISION NOT NULL,
     "category" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "isHighlighted" BOOLEAN DEFAULT false,
     "imageUrl" TEXT,
+    "images" TEXT[],
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "products_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "product_images" (
-    "id" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
-    "productId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "product_images_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -46,6 +37,7 @@ CREATE TABLE "catalogs" (
     "slug" TEXT NOT NULL,
     "description" TEXT,
     "logo" TEXT,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -75,9 +67,6 @@ CREATE INDEX "_CatalogProducts_B_index" ON "_CatalogProducts"("B");
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "product_images" ADD CONSTRAINT "product_images_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "catalogs" ADD CONSTRAINT "catalogs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -48,6 +48,7 @@ model Catalog {
   description String?
   logo        String?
   isActive    Boolean    @default(true)
+  whatsapp    String
   user        User       @relation(fields: [userId], references: [id])
   userId      String
   products    Product[]  @relation("CatalogProducts")

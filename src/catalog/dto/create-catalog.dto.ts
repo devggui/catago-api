@@ -1,5 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator"
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from "class-validator"
 
 export class CreateCatalogDto {
   @ApiProperty()
@@ -25,4 +31,13 @@ export class CreateCatalogDto {
   @ApiProperty()
   @IsBoolean()
   isActive: boolean
+
+  @ApiProperty()
+  @IsString()
+  whatsapp: string
+
+  @ApiProperty({ type: [String], required: false })
+  @IsArray()
+  @IsOptional()
+  productIds?: string[]
 }

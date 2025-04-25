@@ -46,14 +46,8 @@ export class AuthGuard implements CanActivate {
           email: payload.username,
         },
         include: {
-          currentOrganization: true,
-          organizations: {
-            include: {
-              data: true,
-            },
-          },
-          documentPermissions: true,
-          folderPermissions: true,
+          catalogs: true,
+          products: true,
         },
       })
 

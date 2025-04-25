@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -9,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id          String     @id @default(cuid())
+  id          String     @id @default(uuid())
   email       String     @unique
   name        String?
   password    String
@@ -23,16 +22,16 @@ model User {
 }
 
 model Product {
-  id            String          @id @default(cuid())
+  id            String          @id @default(uuid())
   name          String
   slug          String          @unique
   description   String?
-  price         Decimal         @default(0.00)  
+  price         Float
   category      String?
   isActive      Boolean         @default(true)
   isHighlighted Boolean?        @default(false)
   imageUrl      String?
-  images        ProductImage[]
+  images        String[]
   user          User            @relation(fields: [userId], references: [id])
   userId        String
   catalogs      Catalog[]       @relation("CatalogProducts")
@@ -42,22 +41,14 @@ model Product {
   @@map("products")
 }
 
-model ProductImage {
-  id         String   @id @default(cuid())
-  url        String
-  product    Product  @relation(fields: [productId], references: [id])
-  productId  String
-  createdAt  DateTime @default(now())
-
-  @@map("product_images")
-}
-
 model Catalog {
-  id          String     @id @default(cuid())
+  id          String     @id @default(uuid())
   name        String
   slug        String     @unique
   description String?
   logo        String?
+  isActive    Boolean    @default(true)
+  whatsapp    String
   user        User       @relation(fields: [userId], references: [id])
   userId      String
   products    Product[]  @relation("CatalogProducts")
